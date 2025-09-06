@@ -22,21 +22,44 @@ public class MokshaPatam {
             chutes_ladders.put(ladders[i][0], ladders[i][1]);
         }
         for (int i = 0; i < snakes.length; i++) {
-            chutes_ladders.put(snakes[i][0], ladders[i][1]);
+            chutes_ladders.put(snakes[i][0], snakes[i][1]);
         }
+        System.out.println(chutes_ladders);
         // first I need to make the graph
         Map<Integer, ArrayList<Integer>> graph = new HashMap<>();
         // now we add the edges by going through each point
-        for (int i = 0; i < boardsize; i++) {
+        for (int i = 1; i < boardsize; i++) {
             // add the vertex first
             graph.putIfAbsent(i, new ArrayList<>());
-            // now go through the next 6 squares and add them to the graph;
-            for (int j = 0; j < 6; j++) {
+            // now go through the next 6 squares and add them to the graph
+            // but need to use the variable max to make sure we don't go past the end of the board
+            int max = boardsize + 1 - i;
+            max = Math.min(max, 7);
+            for (int j = 1; j < max; j++) {
                 // check if any of the squares are chutes or ladders
-
-                // if not we can just add them directly to the graph
+                int num = i + j;
+                if (chutes_ladders.containsKey(num)) {
+                    // if they are, replace the original square with the ending square
+                    if (num == 7) {
+                        num = chutes_ladders.get(num);
+                        System.out.println(num);
+                    }
+                    else {
+                        num = chutes_ladders.get(num);
+                    }
+                }
+                // now we add the resulting square to the graph
+                graph.putIfAbsent(num, new ArrayList<>());
+                graph.get(i).add(num);
             }
         }
+        System.out.println(graph);
         return 0;
+    }
+    public static void main(String[] args) {
+        int boardsize = 10;
+        int[][] ladders = {{3,8}};
+        int[][] snakes = {{7,2}};
+        fewestMoves(boardsize, ladders, snakes);
     }
 }
